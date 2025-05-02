@@ -1,10 +1,10 @@
-interface AddTodoProps {
+interface Props {
     newTodo: string;
     setNewTodo: (value: string) => void;
     addTodo: () => void;
 }
 
-export function AddTodo({ newTodo, setNewTodo, addTodo }: AddTodoProps) {
+export function AddTodo({ newTodo, setNewTodo, addTodo }: Props) {
     return (
         <div className="flex gap-2 mb-6">
             <input

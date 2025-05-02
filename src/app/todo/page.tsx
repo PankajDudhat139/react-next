@@ -4,15 +4,15 @@ import { AddTodo } from "./components/AddTodo";
 import { TodoItem } from "./components/TodoItem";
 import { useAuth } from "../context/auth-context";
 
-interface Todo {
+interface Props {
   id: number;
   text: string;
   isPinned: boolean;
 }
 
 export default function TodoPage() {
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [deletedTodos, setDeletedTodos] = useState<Todo[]>([]);
+  const [todos, setTodos] = useState<Props[]>([]);
+  const [deletedTodos, setDeletedTodos] = useState<Props[]>([]);
   const [newTodo, setNewTodo] = useState("");
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editText, setEditText] = useState("");
@@ -77,7 +77,7 @@ export default function TodoPage() {
       <AddTodo newTodo={newTodo} setNewTodo={setNewTodo} addTodo={addTodo} />
 
       <div className="space-y-3">
-        {sortedTodos.map((todo: Todo) => (
+        {sortedTodos.map((todo: Props) => (
           <TodoItem
             key={todo.id}
             todo={todo}

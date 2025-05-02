@@ -1,11 +1,11 @@
-interface Todo {
+interface TodoProps {
     id: number;
     text: string;
     isPinned: boolean;
 }
 
-interface TodoItemProps {
-    todo: Todo;
+interface Props {
+    todo: TodoProps;
     editingId: number | null;
     editText: string;
     setEditText: (value: string) => void;
@@ -24,7 +24,7 @@ export function TodoItem({
     togglePin,
     startEdit,
     deleteTodo,
-}: TodoItemProps) {
+}: Props) {
     return (
         <>
             <div
