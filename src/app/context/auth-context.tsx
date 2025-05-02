@@ -15,6 +15,7 @@ const VALID_EMAIL = "admin@example.com";
 const VALID_PASSWORD = "password123";
 
 type AuthContextType = {
+  user: { displayName?: string; email?: string } | null | undefined;
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => boolean;
@@ -24,6 +25,7 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [user, setUser] = useState<{ displayName?: string; email?: string } | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
@@ -57,6 +59,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (email === VALID_EMAIL && password === VALID_PASSWORD) {
       setIsLoading(true);
       setIsAuthenticated(true);
+      setUser({ email, displayName: 'Admin' });
 
       // Set cookie that will be used by middleware
       Cookies.set("isAuthenticated", "true", { expires: 1 }); // 1 day expiry
@@ -67,17 +70,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
     return false;
   };
-
   const logout = () => {
     setIsLoading(true);
     setIsAuthenticated(false);
+    setUser(null);
+    Cookies.remove("isAuthenticated");
     Cookies.remove("isAuthenticated");
     localStorage.removeItem("isAuthenticated");
     router.push("/login");
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, isLoading, login, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, isLoading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

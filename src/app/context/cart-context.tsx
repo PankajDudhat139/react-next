@@ -1,5 +1,11 @@
 "use client";
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 
 interface CartItem {
   id: number;
@@ -10,9 +16,22 @@ interface CartItem {
   category: string;
 }
 
+interface Product {
+    id: number;
+    title: string;
+    price: number;
+    description: string;
+    image: string;
+    category: string;
+    rating: {
+      rate: number;
+      count: number;
+    };
+  }
+
 interface CartContextType {
   cartItems: CartItem[];
-  addToCart: (product: any, quantity: number) => void;
+  addToCart: (product: Product, quantity: number) => void;
   removeFromCart: (id: number) => void;
   updateQuantity: (id: number, quantity: number) => void;
   clearCart: () => void;
@@ -42,44 +61,47 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [cartItems, isInitialized]);
 
-  const addToCart = (product: any, quantity: number) => {
-    setCartItems(prevItems => {
+  const addToCart = (product: Product, quantity: number) => {
+    setCartItems((prevItems) => {
       // Check if item is already in cart
-      const existingItemIndex = prevItems.findIndex(item => item.id === product.id);
-      
+      const existingItemIndex = prevItems.findIndex(
+        (item) => item.id === product.id
+      );
+
       if (existingItemIndex > -1) {
         // Update quantity of existing item
         const updatedItems = [...prevItems];
         updatedItems[existingItemIndex] = {
           ...updatedItems[existingItemIndex],
-          quantity: updatedItems[existingItemIndex].quantity + quantity
+          quantity: updatedItems[existingItemIndex].quantity + quantity,
         };
         return updatedItems;
       } else {
         // Add new item to cart
-        return [...prevItems, {
-          id: product.id,
-          title: product.title,
-          price: product.price,
-          image: product.image,
-          quantity: quantity,
-          category: product.category
-        }];
+        return [
+          ...prevItems,
+          {
+            id: product.id,
+            title: product.title,
+            price: product.price,
+            image: product.image,
+            quantity: quantity,
+            category: product.category,
+          },
+        ];
       }
     });
   };
 
   const removeFromCart = (id: number) => {
-    setCartItems(prevItems => prevItems.filter(item => item.id !== id));
+    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
   };
 
   const updateQuantity = (id: number, quantity: number) => {
     if (quantity < 1) return;
-    
-    setCartItems(prevItems => 
-      prevItems.map(item => 
-        item.id === id ? { ...item, quantity } : item
-      )
+
+    setCartItems((prevItems) =>
+      prevItems.map((item) => (item.id === id ? { ...item, quantity } : item))
     );
   };
 
@@ -88,7 +110,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
   };
 
   const getCartTotal = () => {
-    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+    return cartItems.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
   };
 
   const getCartCount = () => {
@@ -96,15 +121,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <CartContext.Provider value={{
-      cartItems,
-      addToCart,
-      removeFromCart,
-      updateQuantity,
-      clearCart,
-      getCartTotal,
-      getCartCount
-    }}>
+    <CartContext.Provider
+      value={{
+        cartItems,
+        addToCart,
+        removeFromCart,
+        updateQuantity,
+        clearCart,
+        getCartTotal,
+        getCartCount,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );
