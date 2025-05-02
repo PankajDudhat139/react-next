@@ -5,6 +5,7 @@ import "./globals.css";
 import Nav from './components/Nav';
 import LoadingSpinner from './components/LoadingSpinner';
 import { AuthProvider, useAuth } from './context/auth-context';
+import { CartProvider } from './context/cart-context';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,9 +43,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AuthProvider>
-          <AppContent>
-            {children}
-          </AppContent>
+          <CartProvider>
+            <AppContent>
+              {children}
+            </AppContent>
+          </CartProvider>
         </AuthProvider>
       </body>
     </html>
